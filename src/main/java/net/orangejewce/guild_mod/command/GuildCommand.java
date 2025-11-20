@@ -117,6 +117,7 @@ public class GuildCommand {
 
             GuildManager.createGuild(guildName, player, colorFormatting);
             GuildManager.promoteMember(guildName, player, GuildManager.OWNER);
+            GuildManager.updatePlayerTabDisplayName(player);
             context.getSource().sendSuccess(() -> Component.literal("Guild created: " + guildName).withStyle(colorFormatting), false);
         } else {
             assert guildCreationItem != null;
@@ -188,6 +189,7 @@ public class GuildCommand {
         ServerPlayer player = context.getSource().getPlayerOrException();
         if (GuildManager.joinGuild(guildName, player)) {
             context.getSource().sendSuccess(() -> Component.literal("Joined guild: " + guildName), false);
+            GuildManager.updatePlayerTabDisplayName(player);
             return 1;
         } else {
             context.getSource().sendFailure(Component.literal("Failed to join guild."));
@@ -204,6 +206,7 @@ public class GuildCommand {
     private static int leaveGuild(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
         GuildManager.leaveCurrentGuild(player);
+        GuildManager.updatePlayerTabDisplayName(player);
         context.getSource().sendSuccess(() -> Component.literal("Left the guild."), false);
         return 1;
     }

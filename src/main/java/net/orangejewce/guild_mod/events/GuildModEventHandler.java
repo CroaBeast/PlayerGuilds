@@ -49,6 +49,7 @@ public class GuildModEventHandler {
             System.out.println("Player " + player.getName().getString() + " is in guild: " + guildName);
             GuildBuffManager.applyGuildBuffs(player);
         }
+        GuildManager.updatePlayerTabDisplayName(player);
     }
 
     @SubscribeEvent
@@ -77,7 +78,13 @@ public class GuildModEventHandler {
                 event.setCanceled(true); // Cancel the default chat message
                 sendGuildMessage(player, guildName, event.getMessage().getString());
             }
+            return;
         }
+
+        event.setComponent(Component.literal("<")
+                .append(GuildManager.getDisplayNameWithGuild(player))
+                .append("> ")
+                .append(event.getMessage()));
     }
     private static void sendGuildMessage(ServerPlayer sender, String guildName, String message) {
         Set<ServerPlayer> guildMembers = GuildManager.getMembers(guildName, sender.getServer().getPlayerList().getPlayers());

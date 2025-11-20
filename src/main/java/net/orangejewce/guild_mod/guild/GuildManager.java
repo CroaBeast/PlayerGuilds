@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandler;
@@ -98,6 +100,22 @@ public class GuildManager {
 
     public static String getGuild(Player player) {
         return playerGuilds.get(player.getStringUUID());
+    }
+
+    public static MutableComponent getDisplayNameWithGuild(ServerPlayer player) {
+        String guildName = getGuild(player);
+        MutableComponent playerName = Component.literal(player.getName().getString()).withStyle(ChatFormatting.WHITE);
+        if (guildName == null) {
+            return playerName;
+        }
+
+        ChatFormatting guildColor = getGuildColor(guildName);
+        MutableComponent guildComponent = Component.literal("[" + guildName + "] ").withStyle(guildColor);
+        return guildComponent.append(playerName);
+    }
+
+    public static void updatePlayerTabDisplayName(ServerPlayer player) {
+        player.setTabListDisplayName(getDisplayNameWithGuild(player));
     }
 
     public static Set<ServerPlayer> getMembers(String guildName, Iterable<ServerPlayer> players) {
